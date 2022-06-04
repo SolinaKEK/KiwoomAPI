@@ -2,34 +2,9 @@
 
 # 이 스크립트는 koa studio 에 접속하여 주식 정보를 다운로드한다
 # 10062 동일순매매순위요청
-
-# TR OPT 목록:
-# 0798 10062 동일순매매순위요청
-# 1054 10066 장중투자자별매매차트요청
-# 1030 관심종목-대형주
-# 0796 10059 종목별투자자기관별요청
-# 0178 10047 체결강도추이일별요청
-# 0784 일별동향_그래프
+from config import *
 print("opt10062 Q")
 
-import sys
-import warnings
-warnings.simplefilter("ignore", UserWarning)
-sys.coinit_flags = 2
-
-import os
-from PyQt5.QtWidgets import *
-from PyQt5.QAxContainer import *
-from PyQt5.QtCore import *
-import time
-import pandas as pd
-from PyQt5.QtGui import *
-from pywinauto import application
-from pywinauto import timings
-from datetime import datetime, timedelta
-from openpyxl import load_workbook
-
-from config import *
 OPT_NUM = "opt10062"
 OPT_NUM_J_NUM = '10062'
 SCRN_NUM = "0798"
@@ -59,12 +34,11 @@ class Kiwoom(QAxWidget):
         dlg = timings.wait_until_passes(20, 0.5, lambda: app.window(title=title))
         pass_ctrl = dlg.Edit2
         pass_ctrl.set_focus()
-        pass_ctrl.type_keys('') # pass
+        send_keys(PASS) # pass
         cert_ctrl = dlg.Edit3
         cert_ctrl.set_focus()
-        cert_ctrl.type_keys('') # pass id
-        btn_ctrl = dlg.Button0
-        btn_ctrl.click()
+        send_keys(PASSID) # pass id
+        send_keys("{ENTER}")
         self.login_event_loop = QEventLoop()
         self.login_event_loop.exec_()
 
@@ -108,7 +82,6 @@ class Kiwoom(QAxWidget):
             pass
 
     def _opt10062(self, rqname, trcode):
-        #print("=======================NEW FUNCTION CALL========================")
         data_cnt = self._get_repeat_cnt(trcode, rqname)
         global outputs
         global df_final
@@ -119,22 +92,12 @@ class Kiwoom(QAxWidget):
             for output in outputs:
                 data = self._comm_get_data(trcode, "", rqname, i, output)
                 temp_dict[output] = data
-                #print(data)
+
 
             temp_list.append(temp_dict)
             temp_df = pd.DataFrame([temp_dict])
-            #print("temp_df")
-            #print(temp_df)
+
             df_final = df_final.append(temp_df, ignore_index=True)
-            #print("df_final")
-            #print(df_final)
-            #print(temp_dict)
-            #print("========NEW SET========")
-            #df_final.append(temp_df, ignore_index = True)
-        #print(temp_list)
-        #print(df_final)
-
-
 
 
 app = QApplication(sys.argv)
@@ -174,10 +137,10 @@ if not os.path.exists(path):
 # generating excel sheet if DNE
 path_file = path + '/data.xlsx'
 if not os.path.exists(path_file):
-    writer = pd.ExcelWriter(path_file, engine='openpyxl', mode='w')
+    writer = pd.ExcelWriter(path_file, engine='openpyxl', mode='w')     
 # adding sheet to existing excel file
 else:
-    writer = pd.ExcelWriter(path_file, engine='openpyxl', mode='a')
+    writer = pd.ExcelWriter(path_file, engine='openpyxl', mode='a') 
 
 df_final.to_excel(writer, sheet_name = SHEET_NAME, na_rep = 'NA', index = False, encoding = "utf-8-sig", engine = 'openpyxl')
 

@@ -10,6 +10,7 @@ from pywinauto import timings
 import time
 import os
 import sys
+from config import *
 
 app = application.Application()
 app.start("C:/KiwoomFlash3/bin/nkministarter.exe")
@@ -21,11 +22,11 @@ dlg = timings.WaitUntilPasses(20, 0.5, lambda: app.window(title=title))
 
 pass_ctrl = dlg.Edit2
 pass_ctrl.SetFocus()
-pass_ctrl.TypeKeys('') # pass
+pass_ctrl.TypeKeys(PASS) # pass
 
 cert_ctrl = dlg.Edit3
 cert_ctrl.SetFocus()
-cert_ctrl.TypeKeys('') # pass id
+cert_ctrl.TypeKeys(PASSID) # pass id
 
 btn_ctrl = dlg.Button0
 btn_ctrl.click()

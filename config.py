@@ -1,13 +1,30 @@
+import sys
+import warnings
+warnings.simplefilter("ignore", UserWarning)
+sys.coinit_flags = 2
+import os
+from PyQt5.QtWidgets import *
+from PyQt5.QAxContainer import *
+from PyQt5.QtCore import *
+import time
+import pandas as pd
+from PyQt5.QtGui import *
+from pywinauto import application
+from pywinauto import timings
+from pywinauto.keyboard import send_keys
+from datetime import datetime, timedelta
+from openpyxl import load_workbook
+from kiwoom import *
+import xlrd
+import shutil
+import xlwings as xw
 
+# 비밀 번호 정보
+PASS = 'qwer1234'
+PASSID = 'pq13!@zp7t'
+
+# output specification
 output_list = {
-
-    'codes': ['005880', #대한해운
-                '069960', #현대백화점
-                '086280', #현대글로비스
-                '032640', #LG유플러스
-                '005930', #삼성전자
-            ],
-
     '10062': ['종목코드',
                  '순위',
                  '종목명',
@@ -45,7 +62,7 @@ output_list = {
                  '국가',
                  '기타법인',               
                  ],
-    '10059': ['일자',
+    '10059': [
                 '현재가',
                  '대비기호',
                  '전일대비',
@@ -68,6 +85,5 @@ output_list = {
                  ],
 
     '10047': ['체결강도'
-                ]
-
+                ],
 }
